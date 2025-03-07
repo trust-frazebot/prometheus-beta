@@ -30,6 +30,11 @@ def is_valid_url(url: str) -> bool:
         result = urlparse(url)
         
         # Check if scheme and netloc are present
-        return all([result.scheme, result.netloc])
+        # Also validate that netloc is not just whitespace
+        return (
+            bool(result.scheme) and 
+            bool(result.netloc) and 
+            bool(result.netloc.strip())
+        )
     except Exception:
         return False
