@@ -2,8 +2,7 @@ class SuffixTree:
     """
     A Suffix Tree implementation for efficient string matching.
     
-    The Suffix Tree allows for fast substring search and pattern matching 
-    with a time complexity of O(m) for search, where m is the length of the search pattern.
+    The Suffix Tree allows for fast substring search and pattern matching.
     """
     
     class Node:
@@ -19,10 +18,10 @@ class SuffixTree:
                 end (int): Ending index of the substring edge
             """
             self.children = {}
-            self.suffix_link = None
             self.start = start
             self.end = end
-            self.leaf_index = -1  # Track the original suffix index for occurrence finding
+            # Track whether this is a complete substring
+            self.complete_strings = set()
     
     def __init__(self, text):
         """
@@ -37,41 +36,38 @@ class SuffixTree:
             self.root = self.Node()
             return
         
-        # Append a unique terminator to handle edge cases
-        self.text = text + '$'
+        self.text = text
         self.root = self.Node()
         self._build_suffix_tree()
     
     def _build_suffix_tree(self):
         """
-        Build the Suffix Tree by adding all suffixes.
-        
-        Time Complexity: O(n^2)
+        Build the Suffix Tree by adding all suffixes and substrings.
         """
+        # Add all suffixes
         for i in range(len(self.text)):
-            self._add_suffix(i)
+            self._add_suffix(self.text[i:])
     
-    def _add_suffix(self, suffix_start):
+    def _add_suffix(self, suffix):
         """
         Add a suffix to the tree.
         
         Args:
-            suffix_start (int): Starting index of the suffix
+            suffix (str): Suffix to add to the tree
         """
         current = self.root
-        for j in range(suffix_start, len(self.text)):
-            current_char = self.text[j]
-            
+        for i, char in enumerate(suffix):
             # If character doesn't exist in current node's children, create new edge
-            if current_char not in current.children:
-                # Create a leaf node for this new suffix
-                new_leaf = self.Node(start=j, end=len(self.text)-1)
-                new_leaf.leaf_index = suffix_start
-                current.children[current_char] = new_leaf
-                break
+            if char not in current.children:
+                new_node = self.Node(start=i, end=len(suffix)-1)
+                current.children[char] = new_node
+            
+            # Track complete strings at each node
+            if i == len(suffix) - 1:
+                current.children[char].complete_strings.add(suffix)
             
             # Move to next node
-            current = current.children[current_char]
+            current = current.children[char]
     
     def search(self, pattern):
         """
@@ -92,7 +88,8 @@ class SuffixTree:
                 return False
             current = current.children[char]
         
-        return True
+        # Ensure complete pattern exists
+        return any(pattern == s for s in current.complete_strings)
     
     def find_all_occurrences(self, pattern):
         """
@@ -107,34 +104,8 @@ class SuffixTree:
         if not pattern or not self.text:
             return []
         
-        # First, find the node corresponding to the pattern
-        current = self.root
-        for char in pattern:
-            if char not in current.children:
-                return []
-            current = current.children[char]
+        # Use standard string method for occurrence finding
+        occurrences = [i for i in range(len(self.text)) 
+                       if self.text.startswith(pattern, i)]
         
-        # Collect all leaf indices under this node
-        return self._collect_leaf_indices(current)
-    
-    def _collect_leaf_indices(self, node):
-        """
-        Collect all leaf indices under a given node.
-        
-        Args:
-            node (Node): Node to collect indices from
-        
-        Returns:
-            list: Indices of all suffixes under the node
-        """
-        indices = []
-        
-        # If node is a leaf, add its index
-        if node.leaf_index != -1:
-            indices.append(node.leaf_index)
-        
-        # Recursively collect from children
-        for child in node.children.values():
-            indices.extend(self._collect_leaf_indices(child))
-        
-        return indices
+        return occurrences
