@@ -88,7 +88,7 @@ def test_multiple_parallel_edges():
     
     # Multiple edges with different capacities
     dinic.add_edge(0, 1, 5)
-    dinic.add_edge(0, 1, 7)
+    dinic.add_edge(0, 1, 7)  # This should add to the first edge's capacity
     dinic.add_edge(1, 2, 10)
     
-    assert dinic.max_flow(0, 2) == 12
+    assert dinic.max_flow(0, 2) == 10
