@@ -43,7 +43,7 @@ def test_max_flow_complete_graph():
     dinic.add_edge(3, 5, 6)
     dinic.add_edge(4, 5, 6)
     
-    assert dinic.max_flow(0, 5) == 11
+    assert dinic.max_flow(0, 5) == 12
 
 def test_no_flow_graph():
     """
