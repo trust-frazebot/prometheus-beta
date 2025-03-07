@@ -5,24 +5,6 @@ class SuffixTree:
     The Suffix Tree allows for fast substring search and pattern matching.
     """
     
-    class Node:
-        """
-        Internal node class for the Suffix Tree.
-        """
-        def __init__(self, start=-1, end=-1):
-            """
-            Initialize a node with start and end indices.
-            
-            Args:
-                start (int): Starting index of the substring edge
-                end (int): Ending index of the substring edge
-            """
-            self.children = {}
-            self.start = start
-            self.end = end
-            # Track whether this is a complete substring
-            self.complete_strings = set()
-    
     def __init__(self, text):
         """
         Construct a Suffix Tree for the given text.
@@ -33,41 +15,17 @@ class SuffixTree:
         # Handle empty string edge case
         if not text:
             self.text = ""
-            self.root = self.Node()
             return
         
-        self.text = text
-        self.root = self.Node()
-        self._build_suffix_tree()
+        # Append $ to handle full string matching
+        self.text = text + '$'
+        self._build_suffixes()
     
-    def _build_suffix_tree(self):
+    def _build_suffixes(self):
         """
-        Build the Suffix Tree by adding all suffixes and substrings.
+        Build all suffixes as a list for efficient searching.
         """
-        # Add all suffixes
-        for i in range(len(self.text)):
-            self._add_suffix(self.text[i:])
-    
-    def _add_suffix(self, suffix):
-        """
-        Add a suffix to the tree.
-        
-        Args:
-            suffix (str): Suffix to add to the tree
-        """
-        current = self.root
-        for i, char in enumerate(suffix):
-            # If character doesn't exist in current node's children, create new edge
-            if char not in current.children:
-                new_node = self.Node(start=i, end=len(suffix)-1)
-                current.children[char] = new_node
-            
-            # Track complete strings at each node
-            if i == len(suffix) - 1:
-                current.children[char].complete_strings.add(suffix)
-            
-            # Move to next node
-            current = current.children[char]
+        self._suffixes = [self.text[i:] for i in range(len(self.text))]
     
     def search(self, pattern):
         """
@@ -82,14 +40,8 @@ class SuffixTree:
         if not pattern or not self.text:
             return False
         
-        current = self.root
-        for char in pattern:
-            if char not in current.children:
-                return False
-            current = current.children[char]
-        
-        # Ensure complete pattern exists
-        return any(pattern == s for s in current.complete_strings)
+        # Check if pattern appears in any of the suffixes
+        return any(pattern == suffix[:len(pattern)] for suffix in self._suffixes)
     
     def find_all_occurrences(self, pattern):
         """
@@ -104,8 +56,6 @@ class SuffixTree:
         if not pattern or not self.text:
             return []
         
-        # Use standard string method for occurrence finding
-        occurrences = [i for i in range(len(self.text)) 
-                       if self.text.startswith(pattern, i)]
-        
-        return occurrences
+        # Find all starting indices of the pattern
+        return [i for i in range(len(self.text) - 1) 
+                if self.text.startswith(pattern, i)]
