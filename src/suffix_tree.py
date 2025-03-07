@@ -10,21 +10,20 @@ class SuffixTree:
         """
         Internal node class for the Suffix Tree.
         """
-        def __init__(self):
+        def __init__(self, start=-1, end=-1):
             """
-            Initialize a node with empty children and leaf markers.
+            Initialize a node with start and end indices.
             
-            Attributes:
-                children (dict): Dictionary mapping characters to child nodes
-                suffix_link (Node, optional): Link to another node for optimization
-                start (int): Starting index of the edge leading to this node
-                end (int): Ending index of the edge leading to this node
+            Args:
+                start (int): Starting index of the substring edge
+                end (int): Ending index of the substring edge
             """
             self.children = {}
             self.suffix_link = None
-            self.start = -1
-            self.end = -1
-            
+            self.start = start
+            self.end = end
+            self.leaf_index = -1  # Track the original suffix index for occurrence finding
+    
     def __init__(self, text):
         """
         Construct a Suffix Tree for the given text.
@@ -32,6 +31,12 @@ class SuffixTree:
         Args:
             text (str): Input text to build the suffix tree for
         """
+        # Handle empty string edge case
+        if not text:
+            self.text = ""
+            self.root = self.Node()
+            return
+        
         # Append a unique terminator to handle edge cases
         self.text = text + '$'
         self.root = self.Node()
@@ -39,23 +44,34 @@ class SuffixTree:
     
     def _build_suffix_tree(self):
         """
-        Build the Suffix Tree using Ukkonen's algorithm.
+        Build the Suffix Tree by adding all suffixes.
         
-        This is an optimized method to construct the suffix tree in O(n) time.
+        Time Complexity: O(n^2)
         """
-        # Implement full suffix tree construction
         for i in range(len(self.text)):
-            self._extend_suffix_tree(i)
+            self._add_suffix(i)
     
-    def _extend_suffix_tree(self, phase):
+    def _add_suffix(self, suffix_start):
         """
-        Extend the suffix tree for each character.
+        Add a suffix to the tree.
         
         Args:
-            phase (int): Current phase of suffix tree construction
+            suffix_start (int): Starting index of the suffix
         """
-        # Placeholder for detailed Ukkonen's algorithm implementation
-        pass
+        current = self.root
+        for j in range(suffix_start, len(self.text)):
+            current_char = self.text[j]
+            
+            # If character doesn't exist in current node's children, create new edge
+            if current_char not in current.children:
+                # Create a leaf node for this new suffix
+                new_leaf = self.Node(start=j, end=len(self.text)-1)
+                new_leaf.leaf_index = suffix_start
+                current.children[current_char] = new_leaf
+                break
+            
+            # Move to next node
+            current = current.children[current_char]
     
     def search(self, pattern):
         """
@@ -67,7 +83,7 @@ class SuffixTree:
         Returns:
             bool: True if pattern exists in the text, False otherwise
         """
-        if not pattern:
+        if not pattern or not self.text:
             return False
         
         current = self.root
@@ -88,30 +104,37 @@ class SuffixTree:
         Returns:
             list: Indices of all occurrences of the pattern
         """
-        if not pattern:
+        if not pattern or not self.text:
             return []
         
-        occurrences = []
+        # First, find the node corresponding to the pattern
         current = self.root
-        
-        # Traverse to the end of the pattern
         for char in pattern:
             if char not in current.children:
                 return []
             current = current.children[char]
         
-        # Collect all leaf nodes under this node
-        self._collect_occurrences(current, occurrences)
-        
-        return occurrences
+        # Collect all leaf indices under this node
+        return self._collect_leaf_indices(current)
     
-    def _collect_occurrences(self, node, occurrences):
+    def _collect_leaf_indices(self, node):
         """
-        Recursively collect all occurrences from leaf nodes.
+        Collect all leaf indices under a given node.
         
         Args:
-            node (Node): Current node to explore
-            occurrences (list): List to store occurrence indices
+            node (Node): Node to collect indices from
+        
+        Returns:
+            list: Indices of all suffixes under the node
         """
-        # This is a placeholder - full implementation would traverse leaf nodes
-        pass
+        indices = []
+        
+        # If node is a leaf, add its index
+        if node.leaf_index != -1:
+            indices.append(node.leaf_index)
+        
+        # Recursively collect from children
+        for child in node.children.values():
+            indices.extend(self._collect_leaf_indices(child))
+        
+        return indices
