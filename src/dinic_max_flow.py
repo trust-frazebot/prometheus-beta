@@ -10,7 +10,6 @@ class DinicMaxFlow:
         """
         self.num_vertices = num_vertices
         self.graph = [[] for _ in range(num_vertices)]
-        self.flow_graph = [[] for _ in range(num_vertices)]
     
     def add_edge(self, u: int, v: int, capacity: int):
         """
@@ -20,6 +19,13 @@ class DinicMaxFlow:
         :param v: Destination vertex
         :param capacity: Edge capacity
         """
+        # Check if an edge already exists between u and v
+        for edge in self.graph[u]:
+            if edge[0] == v:
+                # If edge exists, merge capacities
+                edge[1] += capacity
+                return
+        
         # Forward edge
         forward_edge = [v, capacity, 0]  # [to, capacity, flow]
         # Reverse edge for residual graph
