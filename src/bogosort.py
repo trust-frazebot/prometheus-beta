@@ -29,7 +29,8 @@ def bogosort(arr: List[T]) -> List[T]:
     working_list = arr.copy()
     
     # Track number of attempts to prevent infinite loops
-    max_attempts = 1000
+    # Increase max_attempts exponentially with list length to handle larger lists
+    max_attempts = max(1000, len(working_list) ** 3)
     attempts = 0
     
     # Continue shuffling until the list is sorted
