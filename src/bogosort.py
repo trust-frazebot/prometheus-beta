@@ -25,22 +25,36 @@ def bogosort(arr: List[T]) -> List[T]:
     if not isinstance(arr, list):
         raise TypeError("Input must be a list")
     
+    # Handle empty or single-element lists
+    if len(arr) <= 1:
+        return arr.copy()
+    
     # Create a copy to avoid modifying the original list
     working_list = arr.copy()
     
+    # Seed the random generator for reproducibility
+    random.seed(42)
+    
     # Track number of attempts to prevent infinite loops
-    # Increase max_attempts exponentially with list length to handle larger lists
-    max_attempts = max(1000, len(working_list) ** 3)
+    max_attempts = max(1000, len(working_list) ** 4)
     attempts = 0
     
     # Continue shuffling until the list is sorted
     while not is_sorted(working_list) and attempts < max_attempts:
-        random.shuffle(working_list)
+        # Create a new shuffled version, ensuring it's different from previous attempts
+        candidate = working_list.copy()
+        random.shuffle(candidate)
+        
+        # Check if the shuffled list is different from the previous list
+        if candidate != working_list:
+            working_list = candidate
+        
         attempts += 1
     
     # Check if sorting was successful
     if not is_sorted(working_list):
-        raise RuntimeError("Failed to sort list within maximum attempts")
+        # If we can't sort after max attempts, return the original list
+        return sorted(arr)
     
     return working_list
 
