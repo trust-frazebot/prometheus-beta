@@ -3,7 +3,7 @@ from src.rotate_and_reverse import rotate_and_reverse
 
 def test_basic_rotation_and_reversal():
     """Test basic rotation and reversal functionality"""
-    assert rotate_and_reverse("hello", 2) == "loleh"
+    assert rotate_and_reverse("hello", 2) == "lehol"
 
 def test_no_rotation():
     """Test when rotations is zero"""
@@ -15,7 +15,7 @@ def test_full_string_rotation():
 
 def test_rotation_greater_than_length():
     """Test rotation greater than string length"""
-    assert rotate_and_reverse("hello", 7) == "loleh"
+    assert rotate_and_reverse("hello", 7) == "lehol"
 
 def test_empty_string():
     """Test empty string input"""
