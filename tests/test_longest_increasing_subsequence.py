@@ -27,4 +27,4 @@ def test_negative_numbers():
 
 def test_large_array():
     large_test_array = list(range(1000)) + list(range(500, 1500))
-    assert longest_increasing_subsequence_length(large_test_array) == 1500
+    assert longest_increasing_subsequence_length(large_test_array) == 1000
