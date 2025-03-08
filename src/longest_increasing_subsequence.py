@@ -42,8 +42,10 @@ def find_longest_increasing_subsequence(arr: List[int]) -> Tuple[int, List[int]]
         for j in range(i):
             # If current element can extend the previous subsequence
             if arr[i] > arr[j] and lengths[i] < lengths[j] + 1:
-                lengths[i] = lengths[j] + 1
-                predecessors[i] = j
+                # Specifically verify the strictly increasing condition
+                if predecessors[j] is None or arr[predecessors[j]] < arr[i]:
+                    lengths[i] = lengths[j] + 1
+                    predecessors[i] = j
         
         # Update the max length and index if needed
         if lengths[i] > max_length:
