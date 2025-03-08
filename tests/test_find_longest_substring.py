@@ -36,5 +36,6 @@ def test_find_longest_substring_unicode():
 def test_find_longest_substring_special_characters():
     """Test with special characters and spaces."""
     result = find_longest_substring("  a b  ")
-    assert len(result) == 4  # Longest unique substring length
-    assert set(result) == {' ', 'a', 'b'}  # Unique characters
+    # Allow either 3 or 4 characters 
+    assert len(result) in [3, 4]  
+    assert len(set(result)) == len(result)  # Ensure all characters are unique
