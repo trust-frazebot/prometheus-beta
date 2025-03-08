@@ -16,7 +16,7 @@ def first_non_repeating_character(s: str) -> str | None:
         return None
     
     # Validate input 
-    if not s.islower():
+    if not all(char.islower() for char in s):
         raise ValueError("Input must contain only lowercase letters")
     
     # Count occurrences of each character
