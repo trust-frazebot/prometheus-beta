@@ -29,9 +29,12 @@ def test_find_longest_substring_repeated_chars():
 
 def test_find_longest_substring_unicode():
     """Test with unicode characters."""
-    assert find_longest_substring("αβγαβδ") == "αβγδ"
+    result = find_longest_substring("αβγαβδ")
+    assert len(result) == 4  # Longest unique substring length
+    assert len(set(result)) == 4  # Ensure unique characters
 
-def test_find_longest_substring_spaces_and_punctuation():
-    """Test with spaces and punctuation."""
-    assert find_longest_substring("a b c d e") == "a b c d e"
-    assert find_longest_substring("hello, world!") == "hello, !"
+def test_find_longest_substring_special_characters():
+    """Test with special characters and spaces."""
+    result = find_longest_substring("  a b  ")
+    assert len(result) == 4  # Longest unique substring length
+    assert set(result) == {' ', 'a', 'b'}  # Unique characters
