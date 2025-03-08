@@ -3,7 +3,7 @@ from src.sum_of_multiples import sum_of_multiples
 
 def test_basic_multiple():
     """Test basic multiple summing."""
-    assert sum_of_multiples(10, [3, 5]) == 23  # 3 + 5 + 6 + 9 + 10
+    assert sum_of_multiples(10, [3, 5]) == 23  # 3 + 5 + 6 + 9
 
 def test_single_multiple():
     """Test with a single multiple."""
@@ -42,9 +42,9 @@ def test_negative_multiple_raises_error():
         sum_of_multiples(10, [3, -5, 7])
 
 def test_single_multiple_at_limit():
-    """Test multiple that is exactly at the limit."""
-    assert sum_of_multiples(9, [3]) == 9
+    """Test multiple near the limit."""
+    assert sum_of_multiples(9, [3]) == 9  # 3 + 6 
 
 def test_various_multiples():
     """Test summing various multiples."""
-    assert sum_of_multiples(20, [3, 5, 7]) == 78  # Includes unique multiples of 3, 5, and 7
+    assert sum_of_multiples(20, [3, 5, 7]) == 99  # 3+6+9+5+10+15+7+14
