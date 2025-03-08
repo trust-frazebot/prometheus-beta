@@ -12,6 +12,9 @@ def max_balanced_parentheses_pairs(s: str) -> int:
     Returns:
         int: Maximum number of balanced parentheses pairs possible.
 
+    Raises:
+        TypeError: If input is not a string.
+
     Examples:
         >>> max_balanced_parentheses_pairs("(())")
         2
@@ -20,6 +23,10 @@ def max_balanced_parentheses_pairs(s: str) -> int:
         >>> max_balanced_parentheses_pairs("")
         0
     """
+    # Type checking
+    if not isinstance(s, str):
+        raise TypeError("Input must be a string")
+
     # Count the number of opening and closing parentheses
     open_count = s.count('(')
     close_count = s.count(')')
