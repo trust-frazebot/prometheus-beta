@@ -14,6 +14,7 @@ def climb_stairs(n: int) -> int:
 
     Raises:
         ValueError: If n is negative.
+        TypeError: If n is not an integer.
 
     Examples:
         >>> climb_stairs(2)  # 2 ways: 1+1 or 2
@@ -21,6 +22,10 @@ def climb_stairs(n: int) -> int:
         >>> climb_stairs(3)  # 3 ways: 1+1+1, 1+2, 2+1
         3
     """
+    # Type checking
+    if not isinstance(n, int):
+        raise TypeError("Number of steps must be an integer")
+    
     # Validate input
     if n < 0:
         raise ValueError("Number of steps must be non-negative")
