@@ -32,10 +32,11 @@ def longest_increasing_subsequence_length(arr):
         # If current element is greater than previous, extend current subsequence
         if arr[i] > arr[i-1]:
             current_length += 1
-            # Update max length if current subsequence is longer
-            max_length = max(max_length, current_length)
         else:
             # Reset current subsequence length
             current_length = 1
+        
+        # Update max length 
+        max_length = max(max_length, current_length)
     
     return max_length
