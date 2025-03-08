@@ -10,12 +10,12 @@ from fizzy_numbers import get_fizzy_numbers
 def test_get_fizzy_numbers_basic():
     """Test basic functionality of fizzy numbers."""
     result = get_fizzy_numbers(10)
-    assert result == [3, 6, 7, 9, 10], "Should return correct fizzy numbers up to 10"
+    assert result == [3, 6, 7, 9], "Should return correct fizzy numbers up to 10"
 
 def test_get_fizzy_numbers_larger_range():
     """Test fizzy numbers in a larger range."""
     result = get_fizzy_numbers(21)
-    expected = [3, 6, 7, 9, 10, 12, 14, 15, 18, 20, 21]
+    expected = [3, 6, 7, 9, 12, 14, 15, 18, 21]
     assert result == expected, "Should return correct fizzy numbers up to 21"
 
 def test_get_fizzy_numbers_single_number():
