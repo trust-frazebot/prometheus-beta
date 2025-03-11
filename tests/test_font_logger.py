@@ -1,5 +1,6 @@
 import pytest
 import logging
+import io
 from src.font_logger import FontLogger
 
 class TestFontLogger:
@@ -22,9 +23,8 @@ class TestFontLogger:
         
         for size, expected_format in test_cases:
             # Capture the log message
-            with self._capture_log() as captured:
-                logger.log('Test message', size=size)
-                assert expected_format in captured.getvalue()
+            captured = self._capture_log(logger, 'Test message', size=size)
+            assert expected_format in captured
     
     def test_integer_size_options(self):
         """Test integer size options"""
@@ -32,9 +32,8 @@ class TestFontLogger:
         
         # Test valid integer sizes
         for size in range(1, 8):
-            with self._capture_log() as captured:
-                logger.log('Test message', size=size)
-                assert f'<font size="{size}">Test message</font>' in captured.getvalue()
+            captured = self._capture_log(logger, 'Test message', size=size)
+            assert f'<font size="{size}">Test message</font>' in captured
     
     def test_invalid_size_options(self):
         """Test invalid size raises appropriate exceptions"""
@@ -54,14 +53,11 @@ class TestFontLogger:
         with pytest.raises(TypeError, match="Size must be a string or integer"):
             logger.log('Test message', size=None)
     
-    def _capture_log(self):
+    def _capture_log(self, logger, message, **kwargs):
         """
-        Context manager to capture log messages for testing.
-        Returns a StringIO object containing the captured log.
+        Capture log messages for testing.
+        Returns a string containing the captured log.
         """
-        import io
-        import logging
-        
         # Create a string buffer to capture log output
         log_capture = io.StringIO()
         handler = logging.StreamHandler(log_capture)
@@ -70,15 +66,12 @@ class TestFontLogger:
         root_logger = logging.getLogger()
         root_logger.addHandler(handler)
         
-        class LogCapture:
-            def __init__(self, stream):
-                self.stream = stream
-            
-            def getvalue(self):
-                return self.stream.getvalue()
-        
         try:
-            yield LogCapture(log_capture)
+            # Call the log method
+            logger.log(message, **kwargs)
+            
+            # Return the captured log
+            return log_capture.getvalue()
         finally:
             # Remove the handler
             root_logger.removeHandler(handler)
