@@ -74,23 +74,27 @@ def inverse_burrows_wheeler_transform(bwt_string: str) -> str:
     # Create first and last column
     n = len(bwt_string)
     
-    # Create a table to track original order
-    table = [''] * n
-    
-    # First, create the first column (sorted string)
+    # Sort the chars in the last column to get the first column
     first_column = sorted(bwt_string)
     
-    # Create the mapping between first and last column
+    # Initialize arrays to track original order
+    next_indexes = [0] * n
+    visited = [False] * n
+    
+    # Build the next_indexes array
     for i in range(n):
-        # Find the next character in the reconstruction
-        next_char = bwt_string[i]
-        # Place it in the next available slot in the first column
-        idx = first_column.index(next_char)
-        while table[idx]:
-            idx = first_column.index(next_char, idx + 1)
-        table[idx] = next_char
+        j = first_column.index(bwt_string[i])
+        while j < n and (visited[j] or first_column[j] != bwt_string[i]):
+            j += 1
+        next_indexes[i] = j
+        visited[j] = True
     
-    # Recover the original string
-    original = ''.join(char for char in table if char != '$')
+    # Reconstruct the original string
+    original = []
+    current = first_column.index('$')
     
-    return original
+    for _ in range(n - 1):  # Exclude the terminator
+        original.append(first_column[current])
+        current = next_indexes[current]
+    
+    return ''.join(reversed(original))
