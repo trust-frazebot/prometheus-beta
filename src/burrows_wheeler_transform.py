@@ -71,30 +71,32 @@ def inverse_burrows_wheeler_transform(bwt_string: str) -> str:
     if not bwt_string or '$' not in bwt_string:
         raise ValueError("Input must be a valid BWT string with a terminator")
     
-    # Create first and last column
-    n = len(bwt_string)
+    # Sort the characters in the last column
+    sorted_chars = sorted(bwt_string)
     
-    # Sort the chars in the last column to get the first column
-    first_column = sorted(bwt_string)
+    # Track how many times each character appears before its current index
+    char_count = {}
+    last_idx = {}
+    for idx, char in enumerate(bwt_string):
+        if char not in char_count:
+            char_count[char] = 0
+        char_count[char] += 1
+        last_idx[char] = idx
     
-    # Initialize arrays to track original order
-    next_indexes = [0] * n
-    visited = [False] * n
-    
-    # Build the next_indexes array
-    for i in range(n):
-        j = first_column.index(bwt_string[i])
-        while j < n and (visited[j] or first_column[j] != bwt_string[i]):
-            j += 1
-        next_indexes[i] = j
-        visited[j] = True
+    # Create the mapping to track next character in reconstruction
+    next_idx = {}
+    for char in sorted_chars:
+        next_idx[char] = bwt_string.index(char)
     
     # Reconstruct the original string
     original = []
-    current = first_column.index('$')
+    current_char = '$'
+    n = len(bwt_string)
     
-    for _ in range(n - 1):  # Exclude the terminator
-        original.append(first_column[current])
-        current = next_indexes[current]
+    while len(original) < n - 1:  # Exclude terminator character
+        # Find the next occurrence of this character
+        current_char = bwt_string[next_idx[current_char]]
+        if current_char != '$':
+            original.append(current_char)
     
     return ''.join(reversed(original))
