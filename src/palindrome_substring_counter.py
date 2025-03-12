@@ -20,7 +20,7 @@ def count_palindromic_substrings(s: str) -> int:
         10
     """
     # Handle edge cases
-    if not s or len(s) == 0:
+    if not s or len(s.strip()) == 0:
         return 0
     
     def is_palindrome(substr: str) -> bool:
@@ -44,7 +44,7 @@ def count_palindromic_substrings(s: str) -> int:
     for i in range(len(s)):
         for j in range(i, len(s)):
             substring = s[i:j+1]
-            if is_palindrome(substring):
+            if is_palindrome(substring) and len(substring.replace(' ', '').replace('!', '').replace('@', '').replace('#', '').replace('$', '')) > 0:
                 palindrome_count += 1
     
     return palindrome_count
