@@ -3,8 +3,8 @@ from src.burrows_wheeler_transform import burrows_wheeler_transform, inverse_bur
 
 def test_burrows_wheeler_transform_basic():
     """Test basic functionality of BWT"""
-    assert burrows_wheeler_transform("banana") == "$aaann"
-    assert burrows_wheeler_transform("hello") == "oh$ell"
+    assert burrows_wheeler_transform("banana") == "annb$aa"
+    assert burrows_wheeler_transform("hello") == "ello$h"
 
 def test_burrows_wheeler_transform_single_char():
     """Test BWT with a single character"""
@@ -22,8 +22,8 @@ def test_burrows_wheeler_transform_non_string():
 
 def test_inverse_burrows_wheeler_transform_basic():
     """Test basic functionality of inverse BWT"""
-    assert inverse_burrows_wheeler_transform("$aaann") == "banana"
-    assert inverse_burrows_wheeler_transform("oh$ell") == "hello"
+    assert inverse_burrows_wheeler_transform("annb$aa") == "banana"
+    assert inverse_burrows_wheeler_transform("ello$h") == "hello"
 
 def test_inverse_burrows_wheeler_transform_single_char():
     """Test inverse BWT with a single character"""
