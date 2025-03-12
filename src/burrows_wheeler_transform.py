@@ -72,15 +72,25 @@ def inverse_burrows_wheeler_transform(bwt_string: str) -> str:
         raise ValueError("Input must be a valid BWT string with a terminator")
     
     # Create first and last column
-    sorted_chars = sorted(bwt_string)
-    
-    # Reconstruct the original string
     n = len(bwt_string)
-    next_char = sorted_chars.index(bwt_string[0])
-    original = []
     
-    for _ in range(n - 1):  # Exclude terminator
-        original.append(bwt_string[next_char])
-        next_char = sorted_chars.index(bwt_string[next_char])
+    # Create a table to track original order
+    table = [''] * n
     
-    return ''.join(original)
+    # First, create the first column (sorted string)
+    first_column = sorted(bwt_string)
+    
+    # Create the mapping between first and last column
+    for i in range(n):
+        # Find the next character in the reconstruction
+        next_char = bwt_string[i]
+        # Place it in the next available slot in the first column
+        idx = first_column.index(next_char)
+        while table[idx]:
+            idx = first_column.index(next_char, idx + 1)
+        table[idx] = next_char
+    
+    # Recover the original string
+    original = ''.join(char for char in table if char != '$')
+    
+    return original
