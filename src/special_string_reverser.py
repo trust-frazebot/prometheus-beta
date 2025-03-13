@@ -18,6 +18,9 @@ def special_string_reverser(input_string):
     if input_string == input_string[::-1]:
         return input_string
     
+    # Reverse the entire string
+    reversed_string = input_string[::-1]
+    
     # Track the reversal state for each token
     tokens = []
     current_token = ""
@@ -38,7 +41,7 @@ def special_string_reverser(input_string):
         except ValueError:
             return False
     
-    for char in input_string:
+    for char in reversed_string:
         # If character is alphanumeric, add to current token
         if char.isalnum():
             current_token += char
@@ -71,4 +74,4 @@ def special_string_reverser(input_string):
             tokens.append(current_token)
     
     # Join and return the processed tokens
-    return ''.join(tokens)
+    return ''.join(tokens[::-1])
