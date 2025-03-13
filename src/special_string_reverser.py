@@ -34,40 +34,43 @@ def special_string_reverser(input_string):
     if is_palindrome(input_string):
         return input_string
     
-    # Split the string into tokens
+    # Reverse the entire string first
+    reversed_string = input_string[::-1]
+    
+    # Now apply the special rules
     tokens = []
     current_token = ""
     
-    for char in input_string:
+    for char in reversed_string:
         # If character is alphanumeric, add to current token
         if char.isalnum():
             current_token += char
         else:
             # Add non-empty token before adding non-alphanumeric character
             if current_token:
-                tokens.append(current_token)
+                # Determine token type
+                if is_palindrome(current_token):
+                    tokens.append(current_token)
+                elif is_integer(current_token):
+                    tokens.append(current_token[::-1])
+                elif is_word(current_token):
+                    tokens.append(current_token[::-1])
+                else:
+                    tokens.append(current_token)
                 current_token = ""
             tokens.append(char)
     
-    # Add last token if exists
+    # Handle last token
     if current_token:
-        tokens.append(current_token)
-    
-    # Process tokens
-    processed_tokens = []
-    for token in tokens:
-        if is_palindrome(token):
-            # Leave palindromes unchanged
-            processed_tokens.append(token)
-        elif is_integer(token):
-            # Reverse integers as strings
-            processed_tokens.append(token[::-1])
-        elif is_word(token):
-            # Reverse words
-            processed_tokens.append(token[::-1])
+        # Determine token type
+        if is_palindrome(current_token):
+            tokens.append(current_token)
+        elif is_integer(current_token):
+            tokens.append(current_token[::-1])
+        elif is_word(current_token):
+            tokens.append(current_token[::-1])
         else:
-            # Non-alphanumeric or mixed tokens remain unchanged
-            processed_tokens.append(token)
+            tokens.append(current_token)
     
     # Join processed tokens
-    return ''.join(processed_tokens)
+    return ''.join(tokens[::-1])
