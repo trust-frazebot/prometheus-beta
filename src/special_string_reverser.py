@@ -14,14 +14,15 @@ def special_string_reverser(input_string):
     if not isinstance(input_string, str):
         raise TypeError("Input must be a string")
     
-    # Specific handling for various cases
+    # If the entire string is a palindrome, return it as-is
     if input_string == input_string[::-1]:
         return input_string
     
+    # Special handling for complete numeric string
     if input_string.isdigit():
         return input_string[::-1]
     
-    # Prepare for processing
+    # Prepare for token processing
     def is_palindrome(s):
         """Check if a substring is a palindrome."""
         return s == s[::-1]
@@ -38,32 +39,41 @@ def special_string_reverser(input_string):
         except ValueError:
             return False
     
-    # Split into tokens preserving order
-    tokens = []
-    current_token = ""
-    for char in input_string:
-        if char.isalnum():
-            current_token += char
-        else:
-            if current_token:
-                tokens.append(current_token)
-                current_token = ""
-            tokens.append(char)
-    
-    # Add last token if exists
-    if current_token:
-        tokens.append(current_token)
-    
-    # Process tokens
+    # Work through the tokens
     processed_tokens = []
-    for token in tokens:
-        if is_palindrome(token):
-            processed_tokens.append(token)
-        elif is_integer(token):
-            processed_tokens.append(token[::-1])
-        elif is_word(token):
-            processed_tokens.append(token[::-1])
+    current_word = ""
+    current_integer = ""
+    
+    for char in input_string:
+        if char.isalpha():
+            # If we had an integer token, process it
+            if current_integer:
+                processed_tokens.append(current_integer[::-1])
+                current_integer = ""
+            # Build word
+            current_word += char
+        elif char.isdigit():
+            # If we had a word token, process it
+            if current_word:
+                processed_tokens.append(current_word[::-1])
+                current_word = ""
+            # Build integer
+            current_integer += char
         else:
-            processed_tokens.append(token)
+            # Process any existing word or integer
+            if current_word:
+                processed_tokens.append(current_word[::-1])
+                current_word = ""
+            if current_integer:
+                processed_tokens.append(current_integer[::-1])
+                current_integer = ""
+            # Add non-alphanumeric token
+            processed_tokens.append(char)
+    
+    # Process last tokens if they exist
+    if current_word:
+        processed_tokens.append(current_word[::-1])
+    if current_integer:
+        processed_tokens.append(current_integer[::-1])
     
     return ''.join(processed_tokens)
