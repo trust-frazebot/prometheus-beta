@@ -18,8 +18,9 @@ def special_string_reverser(input_string):
     if input_string == input_string[::-1]:
         return input_string
     
-    # Reverse entire string first
-    reversed_string = input_string[::-1]
+    # Special rule for integers
+    if input_string.isdigit():
+        return input_string[::-1]
     
     # Track tokens
     tokens = []
@@ -41,14 +42,14 @@ def special_string_reverser(input_string):
         except ValueError:
             return False
     
-    for char in reversed_string:
+    for char in input_string:
         # If character is alphanumeric, add to current token
         if char.isalnum():
             current_token += char
         else:
             # Process and add current token before non-alphanumeric char
             if current_token:
-                # Original rules: apply processing
+                # Apply processing rules
                 if is_palindrome(current_token):
                     tokens.append(current_token)
                 elif is_integer(current_token):
@@ -63,7 +64,7 @@ def special_string_reverser(input_string):
     
     # Process the last token if exists
     if current_token:
-        # Original rules: apply processing
+        # Apply processing rules
         if is_palindrome(current_token):
             tokens.append(current_token)
         elif is_integer(current_token):
@@ -73,5 +74,4 @@ def special_string_reverser(input_string):
         else:
             tokens.append(current_token)
     
-    # Reverse tokens and join
-    return ''.join(tokens[::-1])
+    return ''.join(tokens)
