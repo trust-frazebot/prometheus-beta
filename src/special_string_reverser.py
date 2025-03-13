@@ -14,6 +14,14 @@ def special_string_reverser(input_string):
     if not isinstance(input_string, str):
         raise TypeError("Input must be a string")
     
+    # If the entire string is a palindrome, return it as-is
+    if input_string == input_string[::-1]:
+        return input_string
+    
+    # Track the reversal state for each token
+    tokens = []
+    current_token = ""
+    
     def is_palindrome(s):
         """Check if a substring is a palindrome."""
         return s == s[::-1]
@@ -30,25 +38,14 @@ def special_string_reverser(input_string):
         except ValueError:
             return False
     
-    # If the entire string is a palindrome, return it as-is
-    if is_palindrome(input_string):
-        return input_string
-    
-    # Reverse the entire string first
-    reversed_string = input_string[::-1]
-    
-    # Now apply the special rules
-    tokens = []
-    current_token = ""
-    
-    for char in reversed_string:
+    for char in input_string:
         # If character is alphanumeric, add to current token
         if char.isalnum():
             current_token += char
         else:
-            # Add non-empty token before adding non-alphanumeric character
+            # Process and add current token before non-alphanumeric char
             if current_token:
-                # Determine token type
+                # Determine how to process the token
                 if is_palindrome(current_token):
                     tokens.append(current_token)
                 elif is_integer(current_token):
@@ -58,11 +55,12 @@ def special_string_reverser(input_string):
                 else:
                     tokens.append(current_token)
                 current_token = ""
+            # Add non-alphanumeric character as-is
             tokens.append(char)
     
-    # Handle last token
+    # Process the last token if exists
     if current_token:
-        # Determine token type
+        # Determine how to process the token
         if is_palindrome(current_token):
             tokens.append(current_token)
         elif is_integer(current_token):
@@ -72,5 +70,5 @@ def special_string_reverser(input_string):
         else:
             tokens.append(current_token)
     
-    # Join processed tokens
-    return ''.join(tokens[::-1])
+    # Join and return the processed tokens
+    return ''.join(tokens)
