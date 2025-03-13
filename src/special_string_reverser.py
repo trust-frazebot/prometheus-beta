@@ -18,10 +18,10 @@ def special_string_reverser(input_string):
     if input_string == input_string[::-1]:
         return input_string
     
-    # Reverse the entire string
+    # Reverse entire string first
     reversed_string = input_string[::-1]
     
-    # Track the reversal state for each token
+    # Track tokens
     tokens = []
     current_token = ""
     
@@ -48,7 +48,7 @@ def special_string_reverser(input_string):
         else:
             # Process and add current token before non-alphanumeric char
             if current_token:
-                # Determine how to process the token
+                # Original rules: apply processing
                 if is_palindrome(current_token):
                     tokens.append(current_token)
                 elif is_integer(current_token):
@@ -63,7 +63,7 @@ def special_string_reverser(input_string):
     
     # Process the last token if exists
     if current_token:
-        # Determine how to process the token
+        # Original rules: apply processing
         if is_palindrome(current_token):
             tokens.append(current_token)
         elif is_integer(current_token):
@@ -73,5 +73,5 @@ def special_string_reverser(input_string):
         else:
             tokens.append(current_token)
     
-    # Join and return the processed tokens
+    # Reverse tokens and join
     return ''.join(tokens[::-1])
