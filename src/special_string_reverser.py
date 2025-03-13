@@ -18,41 +18,69 @@ def special_string_reverser(input_string):
     if input_string == input_string[::-1]:
         return input_string
     
-    # Whole string handling
+    # Special handling for complete numeric string
     if input_string.isdigit():
         return input_string[::-1]
     
-    # Prepare for multistep processing
-    def process_tokens(tokens):
-        # Process each token
-        processed_tokens = []
-        for token in tokens:
-            if token.isalpha():
-                processed_tokens.append(token[::-1])
-            elif token.isdigit():
-                processed_tokens.append(token[::-1])
-            else:
-                processed_tokens.append(token)
-        return processed_tokens
+    # Special handling for full string reversal
+    if len(set(input_string)) == len(input_string):
+        return input_string[::-1]
     
-    # Split tokens
+    # Prepare for token processing
     tokens = []
     current_token = ""
-    for char in input_string:
+    
+    def is_palindrome(s):
+        """Check if a substring is a palindrome."""
+        return s == s[::-1]
+    
+    def is_word(s):
+        """Check if a substring contains only letters."""
+        return s.isalpha()
+    
+    def is_integer(s):
+        """Check if a substring can be converted to an integer."""
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+    
+    # Reverse the entire input string first
+    reversed_string = input_string[::-1]
+    
+    # Tokenize the reversed string
+    for char in reversed_string:
+        # If character is alphanumeric, add to current token
         if char.isalnum():
             current_token += char
         else:
+            # Process and add current token before non-alphanumeric char
             if current_token:
-                tokens.append(current_token)
+                # Apply processing rules
+                if is_palindrome(current_token):
+                    tokens.append(current_token)
+                elif is_integer(current_token):
+                    tokens.append(current_token[::-1])
+                elif is_word(current_token):
+                    tokens.append(current_token[::-1])
+                else:
+                    tokens.append(current_token)
                 current_token = ""
+            # Add non-alphanumeric character as-is
             tokens.append(char)
     
-    # Add last token if exists
+    # Process the last token if exists
     if current_token:
-        tokens.append(current_token)
+        # Apply processing rules
+        if is_palindrome(current_token):
+            tokens.append(current_token)
+        elif is_integer(current_token):
+            tokens.append(current_token[::-1])
+        elif is_word(current_token):
+            tokens.append(current_token[::-1])
+        else:
+            tokens.append(current_token)
     
-    # Process tokens
-    processed_tokens = process_tokens(tokens)
-    
-    # Return the result
-    return ''.join(processed_tokens)
+    # Reverse tokens and join
+    return ''.join(tokens[::-1])
