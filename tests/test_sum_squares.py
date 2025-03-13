@@ -15,7 +15,7 @@ def test_sum_of_squares_negative():
 
 def test_sum_of_squares_mixed_types():
     """Test sum of squares with mixed numeric types."""
-    assert sum_of_squares([1, 2.5, 3]) == 14.25  # 1^2 + 2.5^2 + 3^2 = 1 + 6.25 + 9 = 14.25
+    assert sum_of_squares([1, 2.5, 3]) == 16.25  # 1^2 + 2.5^2 + 3^2 = 1 + 6.25 + 9 = 16.25
 
 def test_sum_of_squares_invalid_input():
     """Test error handling for invalid input types."""
